@@ -113,10 +113,11 @@ class EditorPlayState extends MusicBeatState
 			});
 		}*/
 
-		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
-
-		var splash:NoteSplash = new NoteSplash(100, 100);
-		splash.alpha = 0.0;
+        grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
+        add(grpNoteSplashes);
+        var splash:NoteSplash = new NoteSplash(100, 100);
+        //grpNoteSplashes.add(splash);
+        splash.alpha = 0.000001;
 
 		if (PlayState.SONG.needsVoices)
 			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
@@ -804,7 +805,7 @@ class EditorPlayState extends MusicBeatState
 					--songMisses;
 					if (!note.isSustainNote)
 					{
-						if (!note.noteSplashDisabled)
+						if (!note.noteSplashData.disabled)
 						{
 							spawnNoteSplashOnNote(note);
 						}
@@ -1094,27 +1095,23 @@ class EditorPlayState extends MusicBeatState
 	}
 
 	// Note splash shit, duh
-	function spawnNoteSplashOnNote(note:Note)
-	{
-		if (ClientPrefs.noteSplashes && note != null)
-		{
-			var strum:StrumNote = playerStrums.members[note.noteData];
-			if (strum != null)
-			{
-				spawnNoteSplash(strum.x, strum.y, note.noteData, note);
-			}
-		}
-	}
+    function spawnNoteSplashOnNote(note:Note)
+    {
+        if (ClientPrefs.noteSplashes && note != null)
+        {
+            var strum:StrumNote = playerStrums.members[note.noteData];
+            if (strum != null) spawnNoteSplash(strum.x, strum.y, note.noteData, note);
+        }
+    }
 
-	function spawnNoteSplash(x:Float, y:Float, data:Int, ?note:Note = null)
-	{
-		var skin:String = 'noteSplashes';
-		if (PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0)
-			skin = PlayState.SONG.splashSkin;
-
-		var splash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
-		splash.setupNoteSplash(x, y, data, note, skin);
-	}
+    function spawnNoteSplash(x:Float, y:Float, data:Int, ?note:Note = null)
+    {
+        var skin:String = 'noteSplashes';
+        if (PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
+        var splash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
+        splash.setupNoteSplash(x, y, data, note, skin);
+        grpNoteSplashes.add(splash);
+    }
 
 	override function destroy()
 	{
