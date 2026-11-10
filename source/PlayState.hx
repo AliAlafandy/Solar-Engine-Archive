@@ -1141,7 +1141,7 @@ class PlayState extends MusicBeatState
 
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		add(strumLineNotes);
-		add(grpNoteSplashes);
+		//add(grpNoteSplashes);
 
 		if (ClientPrefs.timeBarType == 'Song Name')
 		{
