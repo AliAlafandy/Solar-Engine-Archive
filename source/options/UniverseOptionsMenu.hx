@@ -109,6 +109,10 @@ class UniverseOptionsMenu extends MusicBeatState
 		ClientPrefs.saveSettings();
 
 		super.create();
+
+		#if mobileC
+		addVirtualPad(UP_DOWN, A_B);
+		#end
 	}
 
 	override function closeSubState()
