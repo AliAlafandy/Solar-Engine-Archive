@@ -1493,6 +1493,8 @@ class PlayState extends MusicBeatState
 		}
 
 		CustomFadeTransition.nextCamera = camOther;
+
+		addMobileControls();
 	}
 
 	public function changeTheSettingsBitch()
