@@ -97,7 +97,9 @@ class ResultScreenSubState extends MusicBeatSubstate
             memTweens.push(FlxTween.tween(scoreTxt, {y: (100 * i) + 20}, 0.3, {startDelay: 0.2 * i, ease: FlxEase.quartOut, onComplete: (_)->{FlxG.sound.play(Paths.sound("confirmMenu"));}}));
         }
 
-        
+        #if mobileC
+		addVirtualPad(NONE, A_B);
+		#end
     }
 
     public override function update(elapsed:Float) {
