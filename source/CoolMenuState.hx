@@ -210,6 +210,10 @@ class CoolMenuState extends MusicBeatState
 
 		super.create();
 
+		#if mobileC
+		addVirtualPad(UP_DOWN, A_B_C_X_Y);
+		#end
+
 		createMenu();
 		changeItem(0);
 
@@ -287,7 +291,7 @@ class CoolMenuState extends MusicBeatState
 					switchPage("useless"); // switches to main page
 				}
 			}
-			if (controls.RESET)
+			if (controls.RESET || virtualPad.buttonY.justPressed)
 			{
 				TitleState.initialized = false;
 				TitleState.closedState = false;
@@ -305,17 +309,15 @@ class CoolMenuState extends MusicBeatState
 				MusicBeatState.switchState(new TitleState());
 			}
 
-			if (FlxG.keys.justPressed.TAB)
+			if (FlxG.keys.justPressed.TAB || virtualPad.buttonX.justPressed)
 			{
 				openSubState(new ShortcutMenuSubState());
 				ShortcutMenuSubState.inShortcutMenu = true;
 			}
-			#if desktop
-			else if (FlxG.keys.anyJustPressed(debugKeys))
+			else if (FlxG.keys.anyJustPressed(debugKeys) || virtualPad.buttonC.justPressed)
 			{
 				debugTween();
 			}
-			#end
 		}
 
 		if (FlxG.sound.music.volume < 0.8)
