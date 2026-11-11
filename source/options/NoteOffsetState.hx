@@ -141,7 +141,7 @@ class NoteOffsetState extends MusicBeatState
 		repositionCombo();
 
 		// Note delay stuff
-		
+	
 		beatText = new Alphabet(0, 0, 'Beat Hit!', true);
 		beatText.scaleX = 0.6;
 		beatText.scaleY = 0.6;
@@ -199,6 +199,10 @@ class NoteOffsetState extends MusicBeatState
 		FlxG.sound.playMusic(Paths.music('offsetSong'), 1, true);
 
 		super.create();
+
+		#if mobileC
+		addVirtualPad(LEFT_RIGHT, A_B_X_Y);
+		#end
 	}
 
 	var holdTime:Float = 0;
@@ -211,7 +215,7 @@ class NoteOffsetState extends MusicBeatState
 	override public function update(elapsed:Float)
 	{
 		var addNum:Int = 1;
-		if(FlxG.keys.pressed.SHIFT) addNum = 10;
+		if(FlxG.keys.pressed.SHIFT || virtualPad.buttonX.justPressed) addNum = 10;
 
 		if(onComboMenu)
 		{
@@ -296,7 +300,7 @@ class NoteOffsetState extends MusicBeatState
 				}
 			}
 
-			if(controls.RESET)
+			if(controls.RESET || virtualPad.buttonY.justPressed)
 			{
 				for (i in 0...ClientPrefs.comboOffset.length)
 				{
@@ -334,7 +338,7 @@ class NoteOffsetState extends MusicBeatState
 				updateNoteDelay();
 			}
 
-			if(controls.RESET)
+			if(controls.RESET || virtualPad.buttonY.justPressed)
 			{
 				holdTime = 0;
 				barPercent = 0;
