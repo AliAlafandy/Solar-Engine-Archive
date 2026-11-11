@@ -243,6 +243,10 @@ class MainMenuState extends MusicBeatState
 
 		super.create();
 
+		#if mobileC
+		addVirtualPad(UP_DOWN, A_B_X_Y);
+		#end
+
 		if (ClientPrefs.fm) FlxG.switchState(new CoolMenuState()); // fix for potentially entering the incorrect state.
 	}
 
@@ -376,14 +380,14 @@ class MainMenuState extends MusicBeatState
 				}
 			}
 			#if desktop
-			else if (FlxG.keys.anyJustPressed(debugKeys))
+			else if (FlxG.keys.anyJustPressed(debugKeys) || virtualPad.buttonX.justPressed)
 			{
 				selectedSomethin = true;
 				MusicBeatState.switchState(new MasterEditorMenu());
 			}
 			#end
 
-			if (FlxG.keys.justPressed.TAB)
+			if (FlxG.keys.justPressed.TAB || virtualPad.buttonY.justPressed)
 			{
 				openSubState(new ShortcutMenuSubState());
 				ShortcutMenuSubState.inShortcutMenu = true;
