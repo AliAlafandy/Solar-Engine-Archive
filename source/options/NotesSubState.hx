@@ -105,6 +105,10 @@ class NotesSubState extends MusicBeatSubstate
 		add(hsbText);
 
 		changeSelection();
+
+		#if mobileC
+		addVirtualPad(LEFT_FULL, A_B_C);
+		#end
 	}
 
 	var changingNote:Bool = false;
@@ -125,7 +129,7 @@ class NotesSubState extends MusicBeatSubstate
 					updateValue(1);
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 				}
-				else if (controls.RESET)
+				else if (controls.RESET || virtualPad.buttonC.justPressed)
 				{
 					resetValue(curSelected, typeSelected);
 					FlxG.sound.play(Paths.sound('scrollMenu'));
@@ -184,7 +188,7 @@ class NotesSubState extends MusicBeatSubstate
 				changeType(1);
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
-			if (controls.RESET)
+			if (controls.RESET || virtualPad.buttonC.justPressed)
 			{
 				for (i in 0...3)
 				{
