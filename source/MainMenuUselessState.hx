@@ -235,6 +235,10 @@ class MainMenuUselessState extends MusicBeatState
 		#end
 
 		super.create();
+
+		#if mobileC
+		addVirtualPad(LEFT_FULL, A_B_X_Y);
+		#end
 	}
 
 	#if ACHIEVEMENTS_ALLOWED
@@ -263,7 +267,7 @@ class MainMenuUselessState extends MusicBeatState
 
 		if (!selectedSomethin && !ShortcutMenuSubState.inShortcutMenu)
 		{
-			if (controls.RESET)
+			if (controls.RESET || virtualPad.buttonY.justPressed)
 			{
 				ClientPrefs.saveSettings();
 				TitleState.initialized = false;
@@ -277,7 +281,7 @@ class MainMenuUselessState extends MusicBeatState
 			}
 
 			var shiftMult:Int = 1;
-			if (FlxG.keys.pressed.SHIFT)
+			if (FlxG.keys.pressed.SHIFT || virtualPad.buttonX.justPressed)
 				shiftMult = 3;
 			if (FlxG.mouse.wheel != 0)
 			{
