@@ -104,6 +104,9 @@ class CreditsState extends MusicBeatState
 		{
 			pisspoop = [
 				// Name - Icon name - Description - Link - BG Color
+				['Mobile Team DEVs'],
+				['Ali Alafandy',				'alafandy',			'Mobile DEV',																	'https://youtube.com/@alialafandy',								'000080'],
+				[''],
 				['Solar Engine DEVs'],
 				['Video Bot',					'videobot',			'First DEV, In charge of the HX files',											'https://linktr.ee/videobot',									'14FFFF'],
 				['BaranMuzu',					'baranmuzu',		'Second DEV, In charge of the LUA files and other',								'https://linktr.ee/baranmuzu',									'BE9877'],
@@ -219,6 +222,10 @@ class CreditsState extends MusicBeatState
 		intendedColor = bg.color;
 		changeSelection();
 		super.create();
+
+		#if mobileC
+		addVirtualPad(UP_DOWN, A_B);
+		#end
 	}
 
 	var quitting:Bool = false;
