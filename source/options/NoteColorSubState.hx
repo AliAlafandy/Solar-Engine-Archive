@@ -175,6 +175,10 @@ class NotesSubState extends MusicBeatSubstate
 		add(tip);
 
 		FlxG.mouse.visible = true;
+
+		#if mobileC
+		addVirtualPad(LEFT_FULL, A_B_C);
+		#end
 	}
 
 	var _storedColor:FlxColor;
