@@ -52,19 +52,7 @@
 			"version": "2.5.0"
 		},
 		{
-			"name": "hscript-ex",
-			"type": "git",
-			"dir": null,
-			"ref": "master",
-			"url": "https://github.com/ianharrigan/hscript-ex"
-		},
-		{
 			"name": "tjson",
-			"type": "haxelib",
-			"version": null
-		},
-		{
-			"name": "hxjsonast",
 			"type": "haxelib",
 			"version": null
 		},
