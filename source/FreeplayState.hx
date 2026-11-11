@@ -237,6 +237,10 @@ class FreeplayState extends MusicBeatState
 		cheatText.alpha = 0;
 
 		super.create();
+
+		#if mobileC
+		addVirtualPad(LEFT_FULL, A_B_C_X_Y_Z);
+		#end
 	}
 
 	override function closeSubState()
@@ -325,7 +329,7 @@ class FreeplayState extends MusicBeatState
 		var ctrl = FlxG.keys.justPressed.CONTROL;
 
 		var shiftMult:Int = 1;
-		if (FlxG.keys.pressed.SHIFT)
+		if (FlxG.keys.pressed.SHIFT || virtualPad.buttonZ.pressed)
 			shiftMult = 3;
 
 		if (bot || practice)
@@ -402,12 +406,12 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
-		if (ctrl && !ShortcutMenuSubState.inShortcutMenu)
+		if (ctrl && !ShortcutMenuSubState.inShortcutMenu || virtualPad.buttonC.justPressed)
 		{
 			persistentUpdate = false;
 			openSubState(new GameplayChangersSubstate());
 		}
-		else if (space)
+		else if (space || virtualPad.buttonX.justPressed)
 		{
 			if (instPlaying != curSelected)
 			{
@@ -487,7 +491,7 @@ class FreeplayState extends MusicBeatState
 				colorTween.cancel();
 			}
 
-			if (FlxG.keys.pressed.SHIFT)
+			if (FlxG.keys.pressed.SHIFT || virtualPad.buttonZ.pressed)
 			{
 				LoadingState.loadAndSwitchState(new ChartingState());
 			}
@@ -500,7 +504,7 @@ class FreeplayState extends MusicBeatState
 
 			destroyFreeplayVocals();
 		}
-		else if (controls.RESET)
+		else if (controls.RESET || virtualPad.buttonY.justPressed)
 		{
 			persistentUpdate = false;
 			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
