@@ -393,6 +393,10 @@ class ModsMenuState extends MusicBeatState
 		FlxG.mouse.visible = true;
 
 		super.create();
+
+		#if mobileC
+		addVirtualPad(UP_DOWN, B);
+		#end
 	}
 
 	/*function getIntArray(max:Int):Array<Int>{
