@@ -1,5 +1,5 @@
 > [!NOTE]
-> this fork we ([Mr YMR](https://github.com/ymrgame2009) & [Ali Alafandy](https://github.com/AliAlafandy)) try to in mobile port
+> this fork we ([Mr YMR](https://github.com/ymrgame2009) & [Ali Alafandy](https://github.com/AliAlafandy)) try to make in mobile port
 > 
 > This readme is taken from a yet to be released version of Solar Engine! I just really hate the original old readme lmao
 >
