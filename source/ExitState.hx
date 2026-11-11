@@ -52,6 +52,10 @@ class ExitState extends MusicBeatSubstate
 		FlxG.sound.music.fadeIn(4, 0, 0.7);
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+
+		#if mobileC
+		addVirtualPad(LEFT_RIGHT, A);
+		#end
 	}
 
 	override function update(elapsed)
