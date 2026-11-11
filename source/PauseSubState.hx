@@ -160,6 +160,10 @@ class PauseSubState extends MusicBeatSubstate
 		regenMenu();
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 		isErect = Paths.formatToSongPath(PlayState.SONG.song.toLowerCase()).trim().endsWith('-erect');
+
+		#if mobileC
+		addVirtualPad(LEFT_FULL, A);
+		#end
 	}
 
 	var holdTime:Float = 0;
