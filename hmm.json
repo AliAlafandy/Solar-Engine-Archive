@@ -82,6 +82,13 @@
 			"name": "hxcpp-debug-server",
 			"type": "haxelib",
 			"version": null
+		},
+		{
+			"name": "extension-androidtools",
+			"type": "git",
+			"dir": null,
+			"ref": "main",
+			"url": "https://github.com/AlafandyPorting/extension-androidtools"
 		}
 	]
 }
