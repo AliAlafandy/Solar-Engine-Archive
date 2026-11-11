@@ -55,6 +55,10 @@ class ShortcutMenuSubState extends MusicBeatSubstate
 		FlxTween.tween(bg, {alpha: 0.6}, 0.4, {ease: FlxEase.quartInOut});
 		FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath('shortcut'), "shared"), 0);
 		FlxG.sound.music.fadeIn(4, 0, 0.7);
+
+		#if mobileC
+		addVirtualPad(UP_DOWN, A_B);
+		#end
 	}
 
 	override function update(elapsed)
