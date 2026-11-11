@@ -217,6 +217,10 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		descText.borderSize = 2.4;
 		add(descText);
 		*/
+
+		#if mobileC
+		addVirtualPad(LEFT_FULL, A_B_C);
+		#end
 	}
 
 	override function destroy()
@@ -236,7 +240,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 	override function update(elapsed:Float)
 	{
 		var shiftMult:Int = 1;
-		if (FlxG.keys.pressed.SHIFT)
+		if (FlxG.keys.pressed.SHIFT || virtualPad.buttonC.justPressed)
 			shiftMult = 10;
 
 		if (controls.UI_UP_P)
