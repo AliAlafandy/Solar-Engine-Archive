@@ -30,7 +30,7 @@
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" vsync="false"/>
 
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false"/>
+	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false" allow-shaders="true" require-shaders="true" allow-high-dpi="true" />
 
 	<!--Switch-specific-->
 	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
@@ -56,6 +56,8 @@
 
 	<define name="PSYCH" />
 	<define name="PSYCHVERSION" value="0.6.3"/>
+
+	<assets path="mobile" rename="assets/mobile" if="mobileC" />
 
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3"  unless="web"/>
@@ -145,6 +147,8 @@
 	<haxelib name="discord_rpc" if="desktop"/>
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 
+	<haxelib name="extension-androidtools"/>
+
 	<!-- <haxelib name="markdown" /> -->
 	<!-- <haxelib name="HtmlParser" /> -->
 
@@ -192,6 +196,31 @@
 	<!--Used for Izzy Engine's crash handler-->
 	<haxedef name="HXCPP_CHECK_POINTER" if="CRASH_HANDLER" />
 	<haxedef name="HXCPP_STACK_LINE" if="CRASH_HANDLER" />
+
+	<!--Mobile Controls Define-->
+	<define name="mobileC" if="mobile" /> <!--Can be added windows, mac or linux-->
+
+	<!--Always enable Null Object Reference check-->
+	<haxedef name="HXCPP_CHECK_POINTER" />
+	<haxedef name="HXCPP_STACK_LINE" />
+	<haxedef name="HXCPP_STACK_TRACE" />
+
+	<!--<section if="android">
+		<config>
+			<!--Gradle-->
+			<!--<android gradle-version="7.4.2" gradle-plugin="7.3.1" />--> <!-- ENABLE THIS IF YOU HAVE ISSUES AT COMPILE -->
+
+			<!--Target SDK-->
+			<!--<android min-sdk-version="16" target-sdk-version="29" max-sdk-version="33" if="${lime &lt; 8.1.0}"/>
+                </config>
+	</section>
+
+	<section if="ios">
+		<!--Dependency--> 
+		<!--<dependency name="Metal.framework" if="${lime &lt; 8.0.0}" />
+	</section>-->
+
+    <haxedef name="no-deprecation-warnings" unless="debug" />
 
 	<!-- Do whatever you want I'm tired uninstall and install everytime -->
 	<certificate path="key.keystore" password="@ellawy09" alias="alafandy" alias-password="@ellawy09" if="android" unless="debug"/>
