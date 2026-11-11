@@ -239,7 +239,7 @@ class FreeplayState extends MusicBeatState
 		super.create();
 
 		#if mobileC
-		addVirtualPad(LEFT_FULL, A_B_C_X_Y_Z);
+		addVirtualPad(LEFT_FULL, A_B_C_D_V_X_Y_Z);
 		#end
 	}
 
@@ -375,7 +375,7 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
-		if (FlxG.keys.justPressed.TAB)
+		if (FlxG.keys.justPressed.TAB || virtualPad.buttonD.justPressed)
 		{
 			openSubState(new ShortcutMenuSubState());
 			ShortcutMenuSubState.inShortcutMenu = true;
