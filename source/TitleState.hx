@@ -1,7 +1,9 @@
 package;
 
-#if (desktop || mobile)
+#if DISCORD_ALLOWED
 import Discord.DiscordClient;
+#end
+#if (desktop || mobile)
 import sys.thread.Thread;
 #end
 import flixel.FlxG;
