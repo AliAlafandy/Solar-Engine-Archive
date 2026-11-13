@@ -106,6 +106,7 @@ class CreditsState extends MusicBeatState
 				// Name - Icon name - Description - Link - BG Color
 				['Mobile Team DEVs'],
 				['Ali Alafandy',				'alafandy',			'Mobile DEV',																	'https://youtube.com/@alialafandy',								'000080'],
+				['Mr YMR',						'ymrgame2009',		'Another Mobile DEV lol',															'https://youtube.com/@mr_ymr_2009',								'000080'],
 				[''],
 				['Solar Engine DEVs'],
 				['Video Bot',					'videobot',			'First DEV, In charge of the HX files',											'https://linktr.ee/videobot',									'14FFFF'],
