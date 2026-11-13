@@ -50,6 +50,7 @@
 	<define name="VIDEOS_ALLOWED" if="web || windows" unless="32bits"/>
 	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
 	<define name="TITLE_SCREEN_EASTER_EGG" if="officialBuild"/> <!-- DELETE THE if="officialBuild" for enabling this on an unofficial build -->
+	<define name="DISCORD_ALLOWED" if="desktop" />
 	<define name="CRASH_HANDLER" if="desktop release" />
 	<define name="SILLY_OPTIONS" /> <!-- Allows certain settings to be enabled. -->
 	<!-- <define name="PROMPT_LAUNCHER" /> --> <!-- Launcher is archived! -->
@@ -144,7 +145,7 @@
 	<haxelib name="hxCodec" if="VIDEOS_ALLOWED"/> <!-- Specify the version so people can compile! -->
 	<haxelib name="faxe" if='switch'/>
 	<!--<haxelib name="polymod"/> -->
-	<haxelib name="discord_rpc"/> <!--if="desktop"-->
+	<haxelib name="discord_rpc" if="DISCORD_ALLOWED"/>
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 
 	<haxelib name="extension-androidtools"/>
