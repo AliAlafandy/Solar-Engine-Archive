@@ -207,6 +207,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 		var tex_str = "speech_bubble";
 		if (ClientPrefs.darkmode) tex_str = "speech_bubble_dark";
 		box.frames = Paths.getSparrowAtlas(tex_str);
+		box.scrollFactor.set();
 		box.antialiasing = ClientPrefs.globalAntialiasing;
 		box.animation.addByPrefix('normal', 'speech bubble normal', 24);
 		box.animation.addByPrefix('normalOpen', 'Speech Bubble Normal Open', 24, false);
