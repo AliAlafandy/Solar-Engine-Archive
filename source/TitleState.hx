@@ -1,6 +1,6 @@
 package;
 
-#if desktop
+#if (desktop || mobile)
 import Discord.DiscordClient;
 import sys.thread.Thread;
 #end
