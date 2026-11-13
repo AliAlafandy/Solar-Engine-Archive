@@ -1,6 +1,8 @@
 package options;
 
+#if DISCORD_ALLOWED
 import Discord.DiscordClient;
+#end
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
