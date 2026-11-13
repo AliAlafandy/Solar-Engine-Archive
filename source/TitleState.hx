@@ -97,7 +97,9 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
+		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("In the Intro", null);
+		#end
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
