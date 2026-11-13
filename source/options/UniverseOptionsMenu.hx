@@ -58,7 +58,9 @@ class UniverseOptionsMenu extends MusicBeatState
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
+		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("Selecting options category", null);
+		#end
 
 		if (ClientPrefs.darkmode)
 		{
