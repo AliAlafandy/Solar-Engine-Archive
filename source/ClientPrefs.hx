@@ -9,7 +9,6 @@ import flixel.util.FlxColor;
 
 class ClientPrefs
 {
-	public static var storageType:String = "EXTERNAL"; // "EXTERNAL_DATA"
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
 	public static var opponentStrums:Bool = true;
