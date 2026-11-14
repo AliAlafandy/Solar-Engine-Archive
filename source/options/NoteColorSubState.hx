@@ -173,12 +173,11 @@ class NotesSubState extends MusicBeatSubstate
 		updateTipText();
 
 		FlxG.mouse.visible = true;
-	}
-
 	
 		#if mobileC
 		addVirtualPad(LEFT_FULL, A_B_C);
 		#end
+	}
 
 	function updateTipText()
 	{
