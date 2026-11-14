@@ -417,17 +417,42 @@ class Paths
 		var gottenPath:String = getPath('$path/$key.$SOUND_EXT', SOUND, library);
 		gottenPath = gottenPath.substring(gottenPath.indexOf(':') + 1, gottenPath.length);
 		// trace(gottenPath);
-		if(!currentTrackedSounds.exists(gottenPath))
-		#if MODS_ALLOWED
-			currentTrackedSounds.set(gottenPath, Sound.fromFile('./' + gottenPath));
-		#else
+		if (!currentTrackedSounds.exists(gottenPath))
 		{
-			var folder:String = '';
-			if(path == 'songs') folder = 'songs:';
+			#if MODS_ALLOWED
+			// Mods are loose files, but bundled game assets are stored in OpenFL's
+			// asset library (not necessarily as files in the app's working directory).
+			var diskPath:String = './' + gottenPath;
+			if (FileSystem.exists(diskPath))
+			{
+				currentTrackedSounds.set(gottenPath, Sound.fromFile(diskPath));
+			}
+			else
+			{
+				var assetKey:String = getPath('$path/$key.$SOUND_EXT', SOUND, library);
+				if (path == 'songs')
+					assetKey = 'songs:' + assetKey;
 
-			currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(folder + getPath('$path/$key.$SOUND_EXT', SOUND, library)));
+				if (OpenFlAssets.exists(assetKey, SOUND))
+					currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(assetKey));
+				else
+				{
+					trace('Sound asset not found: ' + assetKey);
+					return null;
+				}
+			}
+			#else
+			var folder:String = '';
+			if (path == 'songs') folder = 'songs:';
+			var assetKey:String = folder + getPath('$path/$key.$SOUND_EXT', SOUND, library);
+			if (!OpenFlAssets.exists(assetKey, SOUND))
+			{
+				trace('Sound asset not found: ' + assetKey);
+				return null;
+			}
+			currentTrackedSounds.set(gottenPath, OpenFlAssets.getSound(assetKey));
+			#end
 		}
-		#end
 		localTrackedAssets.push(gottenPath);
 		return currentTrackedSounds.get(gottenPath);
 	}
