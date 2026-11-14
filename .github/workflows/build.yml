@@ -18,6 +18,10 @@ on:
       artifactPath:
         required: true
         type: string
+      expectedAbi:
+        required: false
+        type: string
+        default: ""
 
 env:
   HAXE_VERSION: 4.2.5
@@ -113,6 +117,23 @@ jobs:
 
       - name: Compile
         run: haxelib run lime build ${{ inputs.buildArgs }}
+
+      - name: Verify Android APK ABI
+        if: inputs.expectedAbi != ''
+        shell: bash
+        run: |
+          APK="$(find export/release/android/bin/app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' -print -quit)"
+          if [ -z "$APK" ]; then
+            echo "Android APK was not produced."
+            exit 1
+          fi
+          ABIS="$(unzip -Z1 "$APK" | awk -F/ '$1 == "lib" && NF >= 3 { print $2 }' | sort -u | paste -sd, -)"
+          echo "Expected ABI: ${{ inputs.expectedAbi }}"
+          echo "APK ABIs: $ABIS"
+          if [ "$ABIS" != "${{ inputs.expectedAbi }}" ]; then
+            echo "Wrong APK ABI set. Expected only ${{ inputs.expectedAbi }}."
+            exit 1
+          fi
 
       - name: Make IPA
         if: inputs.name == 'iOS'
