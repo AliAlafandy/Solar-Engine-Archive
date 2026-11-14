@@ -16,13 +16,15 @@ jobs:
         include:
           - name: Android x64
             os: ubuntu-22.04
-            buildArgs: "android -final -ONLY_ARM64"
+            buildArgs: "android -final -D android64 -clean"
             artifactName: Android x64
+            expectedAbi: arm64-v8a
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
           - name: Android x32
             os: ubuntu-22.04
-            buildArgs: "android -final -ONLY_ARMV7"
+            buildArgs: "android -final -D android32 -clean"
             artifactName: Android x32
+            expectedAbi: armeabi-v7a
             artifactPath: "export/release/android/bin/app/build/outputs/apk/release/*.apk"
           - name: iOS
             os: macos-15
@@ -36,6 +38,7 @@ jobs:
         buildArgs: ${{ matrix.buildArgs }}
         artifactName: ${{ matrix.artifactName }}
         artifactPath: ${{ matrix.artifactPath }}
+        expectedAbi: ${{ matrix.expectedAbi }}
 
   Releaser:
     needs: [build]
