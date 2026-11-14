@@ -65,6 +65,7 @@ jobs:
         run: |
           haxelib install hmm --quiet
           haxelib run hmm install --quiet
+          haxelib set lime 8.1.0
 
       - name: Configure Android
         if: startsWith(inputs.name, 'Android')
