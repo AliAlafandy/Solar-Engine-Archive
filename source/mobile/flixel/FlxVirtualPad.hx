@@ -211,7 +211,13 @@ class FlxVirtualPad extends FlxSpriteGroup
 			{
 				var frameWidth:Int = Std.int(graphic.width / 3);
 				if (frameWidth > 0)
-					button.frames = FlxTileFrames.fromGraphic(graphic, FlxPoint.get(frameWidth, graphic.height));
+				{
+					var loadedFrames = FlxTileFrames.fromGraphic(graphic, FlxPoint.get(frameWidth, graphic.height));
+					if (loadedFrames != null)
+						button.frames = loadedFrames;
+					else
+						trace('Could not create virtual pad frames for: ' + graphicPath);
+				}
 			}
 			else
 			{
