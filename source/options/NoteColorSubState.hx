@@ -175,7 +175,7 @@ class NotesSubState extends MusicBeatSubstate
 		FlxG.mouse.visible = true;
 	
 		#if mobileC
-		addVirtualPad(LEFT_FULL, A_B_C);
+		addVirtualPad(NONE, B_C);
 		#end
 	}
 
@@ -450,7 +450,7 @@ class NotesSubState extends MusicBeatSubstate
 				}
 			}
 		}
-		else if (controls.RESET && hexTypeNum < 0)
+		else if ((controls.RESET || virtualPad.buttonC.justPressed) && hexTypeNum < 0)
 		{
 			setShaderColor(!onPixel ? deafaultArrowcolor[curSelectedNote][curSelectedMode] : ClientPrefs.defaultPixelRGB[curSelectedNote][curSelectedMode]);
 			FlxG.sound.play(Paths.sound('cancelMenu'), 0.6);
