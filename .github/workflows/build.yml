@@ -32,22 +32,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@main
 
-      - name: Setup Android NDK
-        if: inputs.name == 'Android x64' || inputs.name == 'Android x32'
+      - name: Setup Android NDK x64
+        if: inputs.name == 'Android x64'
         uses: nttld/setup-ndk@main
-        id: setup-ndk
+        id: setup-ndk-64
         with:
           ndk-version: r21e
 
-      - name: Setup Java JDK
-        if: inputs.name == 'Android x64' || inputs.name == 'Android x32'
+      - name: Setup Android NDK x32
+        if: inputs.name == 'Android x32'
+        uses: nttld/setup-ndk@main
+        id: setup-ndk-32
+        with:
+          ndk-version: r21e
+
+      - name: Setup Java JDK x64
+        if: inputs.name == 'Android x64'
         uses: actions/setup-java@main
         with:
           distribution: 'zulu'
           java-version: 18
 
-      - name: Setup Android SDK
-        if: inputs.name == 'Android x64' || inputs.name == 'Android x32'
+      - name: Setup Java JDK x32
+        if: inputs.name == 'Android x32'
+        uses: actions/setup-java@main
+        with:
+          distribution: 'zulu'
+          java-version: 18
+
+      - name: Setup Android SDK x64
+        if: inputs.name == 'Android x64'
+        uses: android-actions/setup-android@main
+
+      - name: Setup Android SDK x32
+        if: inputs.name == 'Android x32'
         uses: android-actions/setup-android@main
 
       - name: Setup Haxe
@@ -73,15 +91,25 @@ jobs:
           haxelib list
           haxelib run lime --version
 
-      - name: Configure Android
-        if: inputs.name == 'Android x64' || inputs.name == 'Android x32'
+      - name: Configure Android x64
+        if: inputs.name == 'Android x64'
         run: | # "$ANDROID_NDK_LATEST_HOME", "$JAVA_HOME_17_arm64"
           haxelib run lime config ANDROID_SDK "$ANDROID_HOME"
           haxelib run lime config ANDROID_NDK_ROOT "$ANDROID_NDK_HOME"
           haxelib run lime config JAVA_HOME "$JAVA_HOME"
           haxelib run lime config ANDROID_SETUP true
         env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk-64.outputs.ndk-path }}
+
+      - name: Configure Android x32
+        if: inputs.name == 'Android x32'
+        run: | # "$ANDROID_NDK_LATEST_HOME", "$JAVA_HOME_17_arm64"
+          haxelib run lime config ANDROID_SDK "$ANDROID_HOME"
+          haxelib run lime config ANDROID_NDK_ROOT "$ANDROID_NDK_HOME"
+          haxelib run lime config JAVA_HOME "$JAVA_HOME"
+          haxelib run lime config ANDROID_SETUP true
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk-32.outputs.ndk-path }}
 
       - name: Compile
         run: haxelib run lime build ${{ inputs.buildArgs }}
