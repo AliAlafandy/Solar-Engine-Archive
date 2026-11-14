@@ -1494,7 +1494,12 @@ class PlayState extends MusicBeatState
 
 		CustomFadeTransition.nextCamera = camOther;
 
+		#if mobile
 		addMobileControls();
+		#if ios
+		addVirtualPad(NONE, P);
+		#end
+		#end
 	}
 
 	public function changeTheSettingsBitch()
@@ -3337,7 +3342,13 @@ class PlayState extends MusicBeatState
 			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
 		}
 
-		if ((controls.PAUSE || FlxG.android.justReleased.BACK) && startedCountdown && canPause)
+		if ((controls.PAUSE
+			#if ios
+			|| virtualPad.buttonP.justPressed
+			#end
+			#if android
+			|| FlxG.android.justReleased.BACK
+			#end) && startedCountdown && canPause)
 		{
 			var ret:Dynamic = callOnLuas('onPause', [], false);
 			if (iconBop != null) iconBop.onPause();
