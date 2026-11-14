@@ -193,43 +193,21 @@ class FlxVirtualPad extends FlxSpriteGroup
 
 	private function createButton(X:Float, Y:Float, Graphic:String, Color:Int = 0xFFFFFF):FlxButton
 	{
-		// FlxButton already has a valid built-in graphic. Keep it as a fallback
-		// instead of returning null and passing a null child to FlxSpriteGroup.add().
+		var graphic:FlxGraphic;
+
+		if (Assets.exists('assets/mobile/virtualpad/${Graphic}.png'))
+			graphic = FlxG.bitmap.add('assets/mobile/virtualpad/${Graphic}.png');
+		else
+			graphic = FlxG.bitmap.add('assets/mobile/virtualpad/default.png');
+
 		var button:FlxButton = new FlxButton(X, Y);
-		var graphic:FlxGraphic = null;
-		var graphicPath:String = 'assets/mobile/virtualpad/${Graphic}.png';
-
-		try
-		{
-			if (!Assets.exists(graphicPath))
-				graphicPath = 'assets/mobile/virtualpad/default.png';
-
-			if (Assets.exists(graphicPath))
-				graphic = FlxG.bitmap.add(graphicPath);
-
-			if (graphic != null && graphic.width >= 3 && graphic.height > 0)
-			{
-				var frameWidth:Int = Std.int(graphic.width / 3);
-				if (frameWidth > 0)
-				{
-					var loadedFrames = FlxTileFrames.fromGraphic(graphic, FlxPoint.get(frameWidth, graphic.height));
-					if (loadedFrames != null)
-						button.frames = loadedFrames;
-					else
-						trace('Could not create virtual pad frames for: ' + graphicPath);
-				}
-			}
-			else
-			{
-				trace('Virtual pad graphic not found or invalid: ' + graphicPath);
-			}
+		try {
+			button.frames = FlxTileFrames.fromGraphic(graphic, FlxPoint.get(Std.int(graphic.width / 3), graphic.height));
 		}
-		catch (e:Dynamic)
-		{
-			trace('Failed to load virtual pad graphic "' + graphicPath + '": ' + Std.string(e));
-			// The FlxButton constructor's built-in graphic remains available.
+		catch (e){
+			trace("Failed to create button(s) " + e.message);
+			return null;
 		}
-
 		button.solid = false;
 		button.immovable = true;
 		button.scrollFactor.set();
