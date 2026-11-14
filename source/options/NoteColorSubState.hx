@@ -4,7 +4,6 @@ import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.shapes.FlxShapeCircle;
 import flixel.input.keyboard.FlxKey;
-import flixel.input.gamepad.FlxGamepadInputID;
 import lime.system.Clipboard;
 import flixel.util.FlxGradient;
 import StrumNote;
@@ -31,7 +30,6 @@ class NotesSubState extends MusicBeatSubstate
 		[0xFF12FA05, 0xFFFFFFFF, 0xFF0A4447],
 		[0xFFF9393F, 0xFFFFFFFF, 0xFF651038]
 	];
-
 	var onModeColumn:Bool = true;
 	var curSelectedMode:Int = 0;
 	var curSelectedNote:Int = 0;
@@ -64,12 +62,13 @@ class NotesSubState extends MusicBeatSubstate
 	public function new()
 	{
 		super();
-
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("Note Colors Menu", null);
 		#end
+
+		PlayState.isPixelStage = false;
 
 		if (ClientPrefs.darkmode)
 		{
@@ -106,7 +105,6 @@ class NotesSubState extends MusicBeatSubstate
 
 		modeNotes = new FlxTypedGroup<FlxSprite>();
 		add(modeNotes);
-
 		myNotes = new FlxTypedGroup<StrumNote>();
 		add(myNotes);
 
@@ -143,7 +141,6 @@ class NotesSubState extends MusicBeatSubstate
 		colorWheel.setGraphicSize(360, 360);
 		colorWheel.updateHitbox();
 		add(colorWheel);
-
 		colorWheelSelector = new FlxShapeCircle(0, 0, 8, {thickness: 0}, FlxColor.WHITE);
 		colorWheelSelector.offset.set(8, 8);
 		colorWheelSelector.alpha = 0.6;
@@ -169,16 +166,23 @@ class NotesSubState extends MusicBeatSubstate
 
 		var tipX = 20;
 		var tipY = 660;
-		var tip:FlxText = new FlxText(tipX, tipY, 0, "Press RELOAD to Reset the selected Note Part.", 16);
-		tip.setFormat(Paths.font("funkin.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		tip.borderSize = 2;
-		add(tip);
+		tipTxt = new FlxText(tipX, tipY, 0, "", 16);
+		tipTxt.setFormat(Paths.font("funkin.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		tipTxt.borderSize = 2;
+		add(tipTxt);
+		updateTipText();
 
 		FlxG.mouse.visible = true;
+	}
 
+	
 		#if mobileC
 		addVirtualPad(LEFT_FULL, A_B_C);
 		#end
+
+	function updateTipText()
+	{
+		tipTxt.text = "Press RELOAD to Reset the selected Note Part." + "\nPress CTRL to switch between Normal and Pixel mode.";
 	}
 
 	var _storedColor:FlxColor;
@@ -213,7 +217,7 @@ class NotesSubState extends MusicBeatSubstate
 		F => 'F'
 	];
 
-	override function update(elapsed)
+	override function update(elapsed:Float)
 	{
 		if (controls.BACK)
 		{
@@ -221,6 +225,14 @@ class NotesSubState extends MusicBeatSubstate
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			close();
 			return;
+		}
+
+		if (FlxG.keys.justPressed.CONTROL)
+		{
+			onPixel = !onPixel;
+			spawnNotes();
+			updateNotes(true);
+			FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
 		}
 
 		if (hexTypeNum > -1)
@@ -234,7 +246,6 @@ class NotesSubState extends MusicBeatSubstate
 				hexTypeNum++;
 			else if (allowedTypeKeys.exists(keyPressed))
 			{
-				// trace('keyPressed: $keyPressed, lil str: ' + allowedTypeKeys.get(keyPressed));
 				var curColor:String = alphabetHex.text;
 				var newColor:String = curColor.substring(0, hexTypeNum) + allowedTypeKeys.get(keyPressed) + curColor.substring(hexTypeNum + 1);
 
@@ -243,7 +254,6 @@ class NotesSubState extends MusicBeatSubstate
 				_storedColor = getShaderColor();
 				updateColors();
 
-				// move you to next letter
 				hexTypeNum++;
 				changed = true;
 			}
@@ -253,7 +263,7 @@ class NotesSubState extends MusicBeatSubstate
 			var end:Bool = false;
 			if (changed)
 			{
-				if (hexTypeNum > 5) // Typed last letter
+				if (hexTypeNum > 5)
 				{
 					hexTypeNum = -1;
 					end = true;
@@ -298,7 +308,6 @@ class NotesSubState extends MusicBeatSubstate
 			hexTypeLine.visible = false;
 		}
 
-		// Copy/Paste buttons
 		var generalMoved:Bool = (FlxG.mouse.justMoved);
 		var generalPressed:Bool = (FlxG.mouse.justPressed);
 		if (generalMoved)
@@ -325,7 +334,6 @@ class NotesSubState extends MusicBeatSubstate
 			{
 				var formattedText = Clipboard.text.trim().toUpperCase().replace('#', '').replace('0x', '');
 				var newColor:Null<FlxColor> = FlxColor.fromString('#' + formattedText);
-				// trace('#${Clipboard.text.trim().toUpperCase()}');
 				if (newColor != null && formattedText.length == 6)
 				{
 					setShaderColor(newColor);
@@ -333,13 +341,12 @@ class NotesSubState extends MusicBeatSubstate
 					_storedColor = getShaderColor();
 					updateColors();
 				}
-				else // errored
+				else
 					FlxG.sound.play(Paths.sound('cancelMenu'), 0.6);
 			}
 			hexTypeNum = -1;
 		}
 
-		// Click
 		if (generalPressed)
 		{
 			hexTypeNum = -1;
@@ -390,13 +397,6 @@ class NotesSubState extends MusicBeatSubstate
 				FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
 				updateColors();
 			}
-			/*else if (pointerOverlaps(skinNote))
-				{
-					onPixel = !onPixel;
-					spawnNotes();
-					updateNotes(true);
-					FlxG.sound.play(Paths.sound('scrollMenu'), 0.6);
-			}*/
 			else if (pointerY() >= hexTypeLine.y && pointerY() < hexTypeLine.y + hexTypeLine.height && Math.abs(pointerX() - 1000) <= 84)
 			{
 				hexTypeNum = 0;
@@ -415,7 +415,7 @@ class NotesSubState extends MusicBeatSubstate
 			else
 				holdingOnObj = null;
 		}
-		// holding
+
 		if (holdingOnObj != null)
 		{
 			if (FlxG.mouse.justReleased)
@@ -431,7 +431,7 @@ class NotesSubState extends MusicBeatSubstate
 				{
 					var newBrightness = 1 - FlxMath.bound((pointerY() - colorGradient.y) / colorGradient.height, 0, 1);
 					_storedColor.alpha = 1;
-					if (_storedColor.brightness == 0) // prevent bug
+					if (_storedColor.brightness == 0)
 						setShaderColor(FlxColor.fromRGBFloat(newBrightness, newBrightness, newBrightness));
 					else
 						setShaderColor(FlxColor.fromHSB(_storedColor.hue, _storedColor.saturation, newBrightness));
@@ -443,7 +443,6 @@ class NotesSubState extends MusicBeatSubstate
 					var mouse:FlxPoint = pointerFlxPoint();
 					var hue:Float = FlxMath.wrap(FlxMath.wrap(Std.int(mouse.degreesTo(center)), 0, 360) - 90, 0, 360);
 					var sat:Float = FlxMath.bound(mouse.dist(center) / colorWheel.width * 2, 0, 1);
-					// trace('$hue, $sat');
 					if (sat != 0)
 						setShaderColor(FlxColor.fromHSB(hue, sat, _storedColor.brightness));
 					else
@@ -458,6 +457,7 @@ class NotesSubState extends MusicBeatSubstate
 			FlxG.sound.play(Paths.sound('cancelMenu'), 0.6);
 			updateColors();
 		}
+
 		super.update(elapsed);
 	}
 
@@ -483,7 +483,6 @@ class NotesSubState extends MusicBeatSubstate
 
 	function centerHexTypeLine()
 	{
-		// trace(hexTypeNum);
 		if (hexTypeNum > 0)
 		{
 			var letter = alphabetHex.letters[hexTypeNum - 1];
@@ -519,7 +518,6 @@ class NotesSubState extends MusicBeatSubstate
 			curSelectedNote = dataArray.length - 1;
 		if (curSelectedNote >= dataArray.length)
 			curSelectedNote = 0;
-
 		modeBG.visible = false;
 		notesBG.visible = true;
 		bigNote.rgbShader.parent = Note.globalRgbShaders[curSelectedNote];
@@ -528,7 +526,6 @@ class NotesSubState extends MusicBeatSubstate
 		FlxG.sound.play(Paths.sound('scrollMenu'));
 	}
 
-	// alphabets
 	function makeColorAlphabet(x:Float = 0, y:Float = 0):Alphabet
 	{
 		var text:Alphabet = new Alphabet(x, y, '', true);
@@ -538,7 +535,6 @@ class NotesSubState extends MusicBeatSubstate
 		return text;
 	}
 
-	// notes sprites functions
 	var skinNote:FlxSprite;
 	var modeNotes:FlxTypedGroup<FlxSprite>;
 	var myNotes:FlxTypedGroup<StrumNote>;
@@ -546,21 +542,12 @@ class NotesSubState extends MusicBeatSubstate
 
 	public function spawnNotes()
 	{
+		PlayState.isPixelStage = false;
 		Paths.initDefaultSkin(Note.defaultNoteSkin + Note.getNoteSkinPostfix());
-		if (onPixel && !Paths.fileExists('images/pixelUI/' + Paths.defaultSkin + '.png', IMAGE))
-		{
-			CoolUtil.coolError("HEY! Your Noteskin doesn't have any Pixel sprites. The game will revert to non-pixel notes to prevent a crash."
-				+ "\n\nIf it DOES have Pixel sprites, make sure they're located in 'images/pixelUI/'.",
-				"Solar Engine Anti-Crash Tool");
-			onPixel = false;
-			spawnNotes();
-			return;
-		}
-		dataArray = !onPixel ? ClientPrefs.arrowRGB : ClientPrefs.arrowRGBPixel;
-		if (onPixel)
-			PlayState.stageUI = "pixel";
 
-		// clear groups
+		dataArray = !onPixel ? ClientPrefs.arrowRGB : ClientPrefs.arrowRGBPixel;
+		PlayState.stageUI = onPixel ? "pixel" : "normal";
+
 		modeNotes.forEachAlive(function(note:FlxSprite)
 		{
 			note.kill();
@@ -585,30 +572,19 @@ class NotesSubState extends MusicBeatSubstate
 			bigNote.destroy();
 		}
 
-		// respawn stuff
-		/*var res:Int = onPixel ? 160 : 17;
-			skinNote = new FlxSprite(48, 24).loadGraphic(Paths.image('noteColorMenu/' + (onPixel ? 'note' : 'notePixel')), true, res, res);
-			skinNote.antialiasing = ClientPrefs.globalAntialiasing;
-			skinNote.setGraphicSize(68);
-			skinNote.updateHitbox();
-			skinNote.animation.add('anim', [0], 24, true);
-			skinNote.animation.play('anim', true);
-			if(!onPixel) skinNote.antialiasing = false;
-			add(skinNote); */
-
 		var res:Int = !onPixel ? 160 : 17;
+		var modeGraphicName:String = !onPixel ? 'noteColorMenu/note' : 'noteColorMenu/notePixel';
+
 		for (i in 0...3)
 		{
-			var newNote:FlxSprite = new FlxSprite(230 + (100 * i),
-				100).loadGraphic(Paths.image('noteColorMenu/' + (!onPixel ? 'note' : 'notePixel')), true, res, res);
-			newNote.antialiasing = ClientPrefs.globalAntialiasing;
+			var newNote:FlxSprite = new FlxSprite(230 + (100 * i), 100);
+			newNote.loadGraphic(Paths.image(modeGraphicName), true, res, res);
+			newNote.antialiasing = ClientPrefs.globalAntialiasing && !onPixel;
 			newNote.setGraphicSize(85);
 			newNote.updateHitbox();
 			newNote.animation.add('anim', [i], 24, true);
 			newNote.animation.play('anim', true);
 			newNote.ID = i;
-			if (onPixel)
-				newNote.antialiasing = false;
 			modeNotes.add(newNote);
 		}
 
@@ -619,11 +595,25 @@ class NotesSubState extends MusicBeatSubstate
 			Note.globalRgbShaders[i].r = dataArray[i][0];
 			Note.globalRgbShaders[i].g = dataArray[i][1];
 			Note.globalRgbShaders[i].b = dataArray[i][2];
-
+			
 			var newNote:StrumNote = new StrumNote(150 + (480 / dataArray.length * i), 200, i, 0);
 			newNote.rgbShader.r = dataArray[i][0];
 			newNote.rgbShader.g = dataArray[i][1];
 			newNote.rgbShader.b = dataArray[i][2];
+
+			if (onPixel)
+			{
+				var pixelImgPath:String = 'pixelUI/pixels-default';
+				if (!Paths.fileExists('images/' + pixelImgPath + '.png', IMAGE))
+					pixelImgPath = 'pixelUI/NOTE_assets';
+
+				newNote.loadGraphic(Paths.image(pixelImgPath), true, 17, 17);
+				newNote.antialiasing = false;
+				newNote.animation.add('static', [i]);
+				newNote.animation.add('pressed', [i + 4], 12, false);
+				newNote.animation.add('confirm', [i + 8], 24, false);
+				newNote.playAnim('static');
+			}
 
 			newNote.useRGBShader = true;
 			newNote.setGraphicSize(102);
@@ -634,22 +624,40 @@ class NotesSubState extends MusicBeatSubstate
 
 		bigNote = new Note(0, 0);
 		bigNote.setPosition(250, 325);
-		bigNote.setGraphicSize(250);
 		bigNote.pixelNote = onPixel;
+		
 		if (onPixel)
-			@:privateAccess bigNote.reloadNote(Paths.defaultSkin);
+		{
+			var pixelImgPath:String = 'pixelUI/pixels-default';
+			if (!Paths.fileExists('images/' + pixelImgPath + '.png', IMAGE))
+				pixelImgPath = 'pixelUI/NOTE_assets';
+
+			bigNote.loadGraphic(Paths.image(pixelImgPath), true, 17, 17);
+			bigNote.antialiasing = false;
+
+			for (i in 0...Note.colArray.length)
+			{
+				bigNote.animation.add('note$i', [i + 4], 24, true);
+			}
+		}
+		else
+		{
+			@:privateAccess bigNote.reloadNote('', Note.defaultNoteSkin);
+			bigNote.antialiasing = ClientPrefs.globalAntialiasing;
+			for (i in 0...Note.colArray.length)
+			{
+				bigNote.animation.addByPrefix('note$i', Note.colArray[i] + '0', 24, true);
+			}
+		}
+
+		bigNote.setGraphicSize(250);
 		bigNote.updateHitbox();
 		bigNote.rgbShader.parent = Note.globalRgbShaders[curSelectedNote];
 		bigNote.shader = Note.globalRgbShaders[curSelectedNote].shader;
-		for (i in 0...Note.colArray.length)
-		{
-			if (!onPixel)
-				bigNote.animation.addByPrefix('note$i', Note.colArray[i] + '0', 24, true);
-			else
-				bigNote.animation.add('note$i', [i + 4], 24, true);
-		}
+
 		insert(members.indexOf(myNotes) + 1, bigNote);
 		_storedColor = getShaderColor();
+		
 		PlayState.stageUI = "normal";
 	}
 
@@ -664,7 +672,7 @@ class NotesSubState extends MusicBeatSubstate
 			note.alpha = (curSelectedNote == note.ID) ? 1 : 0.6;
 			if (note.animation.curAnim == null || note.animation.curAnim.name != newAnim)
 				note.playAnim(newAnim, true);
-			if (instant)
+			if (instant && note.animation.curAnim != null)
 				note.animation.curAnim.finish();
 		}
 		bigNote.animation.play('note$curSelectedNote', true);
@@ -681,7 +689,6 @@ class NotesSubState extends MusicBeatSubstate
 		alphabetHex.text = color.toHexString(false, false);
 		for (letter in alphabetHex.letters)
 			letter.color = color;
-
 		colorWheel.color = FlxColor.fromHSB(0, 0, color.brightness);
 		colorWheelSelector.setPosition(colorWheel.x + colorWheel.width / 2, colorWheel.y + colorWheel.height / 2);
 		if (wheelColor.brightness != 0)
@@ -707,6 +714,7 @@ class NotesSubState extends MusicBeatSubstate
 	override function destroy()
 	{
 		Note.globalRgbShaders = [];
+		super.destroy();
 	}
 
 	function setShaderColor(value:FlxColor)
